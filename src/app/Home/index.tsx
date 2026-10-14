@@ -18,6 +18,8 @@ const ITEMS = [
 
 export function Home() {
   const [filter, setFilter] = useState(FilterStatus.PENDING);
+  const [description, setDescription] = useState("")
+
 
   function update(value: FilterStatus) {
     setFilter(value);
@@ -28,7 +30,7 @@ export function Home() {
       <Image source={require("@/assets/logo.png")} style={styles.logo} />
 
       <View style={styles.form}>
-        <Input placeholder="O que você precisa comprar?" />
+        <Input placeholder="O que você precisa comprar?" onChangeText={setDescription} />
         <Button title="Entrar" />
       </View>
 
