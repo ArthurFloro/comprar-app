@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Image,
@@ -15,13 +15,14 @@ import { Item } from "@/components/Item";
 
 import { FilterStatus } from "@/@types/FilterStatus";
 import { styles } from "./styles";
+import { itemsStorage, ItemStorage } from "@/storage/itemsStorage";
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.DONE, FilterStatus.PENDING];
 
 export function Home() {
   const [filter, setFilter] = useState(FilterStatus.PENDING);
   const [description, setDescription] = useState("");
-  const [items, setItems] = useState<any>([]);
+  const [items, setItems] = useState<ItemStorage[]>([]);
 
   function handleAdd() {
     if (!description.trim()) {
@@ -33,13 +34,25 @@ export function Home() {
       description,
       status: FilterStatus.PENDING,
     };
-
-    setItems((prevState) => [...prevState, newItem]);
   }
 
   function update(value: FilterStatus) {
     setFilter(value);
   }
+
+  async function getItems() {
+    try {
+      const response = await itemsStorage.get();
+      setItems(response);
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Erro", "Não foi possível filtrar os itens.");
+    }
+  }
+
+  useEffect(() => {
+    getItems();
+  }, []);
 
   return (
     <View style={styles.container}>
