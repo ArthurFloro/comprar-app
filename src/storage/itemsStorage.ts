@@ -9,6 +9,24 @@ export type ItemStorage = {
   description: string;
 };
 
+async function toggleStatus(id: string): Promise<void> {
+  const items = await get();
+
+  const updatedItems = items.map((item) =>
+    item.id === id
+      ? {
+          ...item,
+          status:
+            item.status === FilterStatus.PENDING
+              ? FilterStatus.DONE
+              : FilterStatus.DONE,
+        }
+      : item,
+  );
+
+  await save(updatedItems);
+}
+
 async function get(): Promise<ItemStorage[]> {
   try {
     const storage = await AsyncStorage.getItem(ITEMS_STORAGE_KEY);
@@ -61,4 +79,5 @@ export const itemsStorage = {
   add,
   remove,
   clear,
+  toggleStatus,
 };
